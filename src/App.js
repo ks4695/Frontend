@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const BASE_URL = 'https://backend-737d.onrender.com';
+const BASE_URL = 'https://backend-737d.onrender.com/api';
 
 // ============================================================
 // 부품종류별 아이콘 — 키워드 매칭 방식
