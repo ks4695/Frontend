@@ -1189,6 +1189,16 @@ function PartManageModal({ mode, inventoryData, userName, showToast, onDataRefre
       }).slice(0, 30)
     : [];
 
+  // 모델명 입력 중 기존 부품 참고 목록 — 대분류와 상관없이 전체에서 검색 (막지 않고 보여주기만 함)
+  const similarExisting = (() => {
+    const q = normalize(form.모델명);
+    if (q.length < 2) return [];
+    return (inventoryData || []).filter(item => {
+      const m = normalize(item.모델명);
+      return m && (m.includes(q) || q.includes(m));
+    }).slice(0, 5);
+  })();
+
   const handleFormChange = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
   const handleAddSubmit = async () => {
@@ -1255,6 +1265,17 @@ function PartManageModal({ mode, inventoryData, userName, showToast, onDataRefre
             <label>모델명 <span className="required-mark">*</span>
               <input value={form.모델명} onChange={e => handleFormChange('모델명', e.target.value)} placeholder="예: SF4101-IP" />
             </label>
+            {similarExisting.length > 0 && (
+              <div className="add-existing-box">
+                <div className="add-existing-title">📋 이미 등록된 비슷한 부품 ({similarExisting.length})</div>
+                {similarExisting.map(item => (
+                  <div key={item.id} className="add-existing-item">
+                    <strong>{item.모델명}</strong>
+                    <span>{[item.대분류, item.부품종류].filter(Boolean).join(' · ')} · 재고 {item.현재수량}개</span>
+                  </div>
+                ))}
+              </div>
+            )}
             <label>적용설비
               <input value={form.적용설비} onChange={e => handleFormChange('적용설비', e.target.value)} placeholder="예: 유성충전기 (1공장)" />
             </label>
